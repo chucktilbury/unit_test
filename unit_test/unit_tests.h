@@ -61,9 +61,11 @@ typedef struct {
 } TestSection;
 
 #define DEF_TEST_MAIN             \
-    int main() {                  \
+    int main() { \
         msg_list = msgListInit(); \
         section_list = sectionListInit();
+
+
 
 #define END_TEST_MAIN        \
     return unit_run_tests(); \

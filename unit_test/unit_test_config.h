@@ -26,7 +26,15 @@
  * qualified name is provided.
  */
 #ifndef OUTFILE
-#define OUTFILE NULL
+#define OUTFILE "result.txt"
+#endif
+
+/*
+ * If this in not NULL, then the text given here will be added to the beginning
+ * of the output and printed as an information message to the stream.
+ */
+#ifndef TITLE
+#define TITLE "\nTesting the unit test library.\n"
 #endif
 
 /*

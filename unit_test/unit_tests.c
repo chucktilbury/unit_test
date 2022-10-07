@@ -11,11 +11,74 @@
 MsgList* msg_list;
 SectionList* section_list;
 
-static void unit_test_print_result();
+static void unit_test_start_run() {
+
+    if(TITLE != NULL) {
+        unit_test_print("%s", TITLE);
+    }
+}
+
+static void unit_test_print_result() {
+
+    int errors = 0;
+    int assert_pass = 0;
+    int assert_fail = 0;
+    int disabled = 0;
+    int tests = 0;
+    int tests_pass = 0;
+    int tests_fail = 0;
+
+    // count up the results
+    int num_sections = sectionListGetLen(section_list);
+    for(int s = 0; s < num_sections; s++) {
+        TestSection* sec = sectionListGet(section_list, s);
+        int num_tests = testListGetLen(sec->test_list);
+        for(int t = 0; t < num_tests; t++) {
+            TestInstance* tst = testListGet(sec->test_list, t);
+            assert_pass += tst->pass;
+            assert_fail += tst->fail;
+            errors += tst->error;
+
+            tests++;
+            if(!tst->enabled)
+                disabled++;
+            if(tst->fail != 0)
+                tests_fail++;
+            else
+                tests_pass++;
+
+        }
+        errors += sec->error;
+    }
+
+    // print out results according to the current verbosity
+    unit_test_print("\nRESULT: %s",
+                    (errors)? "ERROR": (assert_fail)? "FAIL": "PASS");
+    if(VERBOSITY >= 2) {
+        unit_test_print("\ttests: %d pass: %d fail: %d\n",
+                        tests, tests_pass, tests_fail);
+    }
+
+    // write the result to the output file if configured
+    if(OUTFILE != NULL) {
+        FILE* fp = fopen(OUTFILE, "w");
+
+        int len = msgListGetLen(msg_list);
+        char** msgs = msgListGetRaw(msg_list);
+        for(int i = 0; i < len; i++) {
+            fputs(msgs[i], fp);
+        }
+        fputs("\n\n", fp);
+        fclose(fp);
+    }
+}
+
 
 int unit_run_tests() {
 
     int error = 0;
+
+    unit_test_start_run();
 
     int num_sections = sectionListGetLen(section_list);
     for(int s = 0; s < num_sections; s++) {
@@ -55,11 +118,6 @@ int unit_run_tests() {
     sectionListDestroy(section_list);
 
     return error;
-}
-
-static void unit_test_print_result() {
-
-    unit_test_print("\nRESULT:\n");
 }
 
 void unit_test_print(const char* fmt, ...) {
