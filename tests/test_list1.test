@@ -1,0 +1,15 @@
+/*
+ * This is the unit test for list.c
+ *
+ */
+// include the library header
+#include "unit_tests.h"
+
+DEF_TEST(list_test_section1, "this is the first one in section 1")
+    assert_int_equal(1, 0);
+END_TEST
+
+DEF_SECTION(list_section1, "This is the section")
+    ADD_TEST(list_test_section1);
+END_SECTION
+
