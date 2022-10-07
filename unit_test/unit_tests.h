@@ -65,8 +65,8 @@ typedef struct {
         msg_list = msgListInit(); \
         section_list = sectionListInit();
 
-#define END_TEST_MAIN                 \
-    return unit_run_tests();          \
+#define END_TEST_MAIN        \
+    return unit_run_tests(); \
     }
 
 int unit_run_tests();
@@ -80,31 +80,31 @@ void unit_test_add_msg(const char* group, // i.e. "TEST", "\tPASS", or "\tMSG"
 
 void unit_test_print(const char* fmt, ...);
 
-#define unit_test_error(l, t, fmt, ...) \
-    do { \
+#define unit_test_error(l, t, fmt, ...)                                  \
+    do {                                                                 \
         unit_test_add_msg("ERROR", 1, l, (t)->name, fmt, ##__VA_ARGS__); \
-        (t)->error++; \
+        (t)->error++;                                                    \
     } while(0)
 
-#define unit_test_pass(l, t, fmt, ...) \
-    do { \
+#define unit_test_pass(l, t, fmt, ...)                                    \
+    do {                                                                  \
         unit_test_add_msg("\tPASS", 7, l, (t)->name, fmt, ##__VA_ARGS__); \
-        (t)->pass++; \
+        (t)->pass++;                                                      \
     } while(0)
 
-#define unit_test_fail(l, t, fmt, ...) \
-    do { \
+#define unit_test_fail(l, t, fmt, ...)                                    \
+    do {                                                                  \
         unit_test_add_msg("\tFAIL", 6, l, (t)->name, fmt, ##__VA_ARGS__); \
-        (t)->fail++; \
+        (t)->fail++;                                                      \
     } while(0)
 
-#define unit_test_msg(n, fmt, ...) \
-    do {\
+#define unit_test_msg(n, fmt, ...)                              \
+    do {                                                        \
         unit_test_add_msg("MSG", 2, -1, n, fmt, ##__VA_ARGS__); \
     } while(0)
 
-#define unit_test_section(n, fmt, ...) \
-    do {\
+#define unit_test_section(n, fmt, ...)                                \
+    do {                                                              \
         unit_test_add_msg("\nSECTION", 6, -1, n, fmt, ##__VA_ARGS__); \
     } while(0)
 

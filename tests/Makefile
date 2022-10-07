@@ -15,4 +15,4 @@ clean:
 	rm -f $(OBJS) $(TARGET)
 
 format:
-	clang-format -i *.c *.h
+	clang-format -i *.c

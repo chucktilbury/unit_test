@@ -4,8 +4,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "tree.h"
 #include "memory.h"
+#include "tree.h"
 
 Tree* createTree() {
 }
@@ -27,6 +27,3 @@ TreeErr rotateTreeLeft(Tree* tree, const char* key) {
 
 TreeErr rotateTreeRight(Tree* tree, const char* key) {
 }
-
-
-

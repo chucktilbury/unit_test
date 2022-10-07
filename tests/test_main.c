@@ -15,8 +15,8 @@
 
 // main function
 DEF_TEST_MAIN
-    ADD_SECTION(list_section1);
-    ADD_SECTION(list_section2);
-    ADD_SECTION(tree_section1);
-    ADD_SECTION(tree_section2);
+ADD_SECTION(list_section1);
+ADD_SECTION(list_section2);
+ADD_SECTION(tree_section1);
+ADD_SECTION(tree_section2);
 END_TEST_MAIN

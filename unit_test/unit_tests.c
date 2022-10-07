@@ -74,7 +74,7 @@ void unit_test_print(const char* fmt, ...) {
     char* str = _alloc(len + 2);
 
     va_start(args, fmt);
-    vsnprintf(str, len+1, fmt, args);
+    vsnprintf(str, len + 1, fmt, args);
     va_end(args);
 
     strcat(str, "\n");
@@ -85,11 +85,7 @@ void unit_test_print(const char* fmt, ...) {
     msgListAdd(msg_list, str);
 }
 
-void unit_test_add_msg(const char* group,
-                              int verbo,
-                              int line,
-                              const char* name,
-                              const char* fmt, ...) {
+void unit_test_add_msg(const char* group, int verbo, int line, const char* name, const char* fmt, ...) {
 
     va_list args;
     const char* format = "%s: %s:\t%d:\t";
@@ -124,4 +120,3 @@ void unit_test_add_msg(const char* group,
 
     msgListAdd(msg_list, str);
 }
-

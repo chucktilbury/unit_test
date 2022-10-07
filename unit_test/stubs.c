@@ -11,8 +11,8 @@ TestStub* unit_find_stub(TestInstance* ti, int line, const char* name) {
             return list[i];
     }
 
-//     unit_test_add_msg("ERROR", 1, line, ti->name, "stub name \"%s\" does not exist", name);
-//     ti->error++;
+    //     unit_test_add_msg("ERROR", 1, line, ti->name, "stub name \"%s\" does
+    //     not exist", name); ti->error++;
     unit_test_error(line, ti, "stub name \"%s\" does not exist", name);
 
     return NULL;

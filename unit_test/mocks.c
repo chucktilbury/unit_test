@@ -10,8 +10,8 @@ TestMock* unit_find_mock(TestInstance* ti, int line, const char* name) {
             return list[i];
     }
 
-//     unit_test_add_msg("ERROR", 1, line, ti->name, "mock name \"%s\" does not exist", name);
-//     ti->error++;
+    //     unit_test_add_msg("ERROR", 1, line, ti->name, "mock name \"%s\" does
+    //     not exist", name); ti->error++;
     unit_test_error(line, ti, "mock name \"%s\" does not exist", name);
 
     return NULL;
