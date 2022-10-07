@@ -9,14 +9,6 @@ typedef enum {
     TREE_MEM,
 } TreeErr;
 
-typedef struct _tree_struct_ {
-    const char* key;
-    void* data;
-    size_t size;
-    struct _tree_struct_* left;
-    struct _tree_struct_* right;
-} TreeNode;
-
 typedef struct {
     TreeNode* root;
     int num_nodes;

@@ -5,6 +5,15 @@
 #include <string.h>
 
 #include "memory.h"
+
+typedef struct _tree_struct_ {
+    const char* key;
+    void* data;
+    size_t size;
+    struct _tree_struct_* left;
+    struct _tree_struct_* right;
+} TreeNode;
+
 #include "tree.h"
 
 Tree* createTree() {
