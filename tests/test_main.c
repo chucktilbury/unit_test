@@ -1,5 +1,5 @@
 
-#include "unit_tests.h"
+#include "unit_test.h"
 
 // include the file with the units to test
 #include "list.c"
@@ -14,9 +14,9 @@
 #include "test_tree2.test"
 
 // main function
-DEF_TEST_MAIN
-ADD_SECTION(list_section1);
-ADD_SECTION(list_section2);
-ADD_SECTION(tree_section1);
-ADD_SECTION(tree_section2);
+DEF_TEST_MAIN("main test", "this ins the main test")
+ADD_GROUP(list_section1);
+ADD_GROUP(list_section2);
+ADD_GROUP(tree_section1);
+ADD_GROUP(tree_section2);
 END_TEST_MAIN

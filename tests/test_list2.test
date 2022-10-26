@@ -3,14 +3,14 @@
  *
  */
 // include the library header
-#include "unit_tests.h"
+#include "unit_test.h"
 
 DEF_TEST(list_test_section2, "this is the first one in section 2")
-    assert_double_equal(0.000001, 0.0);
-    assert_int_not_equal(1, 0);
+    ASSERT_DOUBLE_EQUAL(0.000001, 0.0);
+    ASSERT_INT_NOT_EQUAL(1, 0);
 END_TEST
 
-DEF_SECTION(list_section2, "This is the section")
+DEF_GROUP(list_section2, "This is the section")
     ADD_TEST(list_test_section2);
-END_SECTION
+END_GROUP
 

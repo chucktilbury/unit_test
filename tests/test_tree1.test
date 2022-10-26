@@ -3,13 +3,13 @@
  *
  */
 // include the library header
-#include "unit_tests.h"
+#include "unit_test.h"
 
 DEF_TEST(tree_test_section1, "this is the first one in section 1")
-    assert_int_equal(1, 0);
+    ASSERT_INT_EQUAL(1, 0);
 END_TEST
 
-DEF_SECTION(tree_section1, "This is the section")
+DEF_GROUP(tree_section1, "This is the section")
     ADD_TEST(tree_test_section1);
-END_SECTION
+END_GROUP
 

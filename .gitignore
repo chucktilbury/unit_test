@@ -1,4 +1,5 @@
-ut
+build/
+.vscode/
 
 # Prerequisites
 *.d

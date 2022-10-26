@@ -18,6 +18,7 @@ void* copyMemory(void* ptr, unsigned int size);
 #define _realloc_ds_array_size(p, t, s, n) (t*)reallocMemory((p), (s) * (n))
 #define _copy_str(s) (char*)copyMemory((void*)s, strlen(s) + 1)
 #define _copy_ds(t, p) (t*)copyMemory((void*)(p), sizeof(t))
+#define _copy_data(p, s) copyMemory((void*)(p), (s))
 #define _free(p) freeMemory((void*)p)
 
 #endif
