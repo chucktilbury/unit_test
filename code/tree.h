@@ -5,8 +5,11 @@ typedef enum {
     TREE_OK,
     TREE_ERROR,
     TREE_NOT_FOUND,
+    TREE_FOUND,
     TREE_DUP,
     TREE_MEM,
+    TREE_SIZE,
+    TREE_DATA,
 } TreeErr;
 
 typedef struct {
