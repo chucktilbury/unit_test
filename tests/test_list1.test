@@ -1,15 +1,42 @@
 /*
- * This is the unit test for list.c
+ * This is the unit test for successful outcomes.
  *
  */
 // include the library header
 #include "unit_test.h"
 
+/*
+ * List interface under test.
+ *
+ * List* createList(size_t size);
+ * ListErr destroyList(List* lst);
+ * ListErr addList(List* lst, const char* data);
+ * ListErr getList(List* lst, int index, void* data);
+ * ListErr pushList(List* lst, void* data);
+ * ListErr popList(List* lst, void* data);
+ * ListErr peekList(List* lst, void* data);
+ * uint8_t* rawList(List* lst);
+ * int lenList(List* lst);
+ */
+
+DEF_TEST(createList_acceptable_sizes, "Test that a valid list is returned what a valid size is provided")
+
+    List* lst = createList(1);
+    ASSERT_PTR_NOT_NULL(lst);
+    ASSERT_PTR_NOT_NULL(lst->buffer);
+    ASSERT_INT_ZERO(lst->len);
+    if(ASSERT_INT_NOT_ZERO(lst->cap))
+        ASSERT_INT_EQUAL(lst->cap, 1 << 3);
+    _free(lst);
+
+END_TEST
+
 DEF_TEST(list_test_section1, "this is the first one in section 1")
     ASSERT_INT_EQUAL(1, 0);
 END_TEST
 
-DEF_GROUP(list_section1, "This is the section")
+DEF_GROUP(list_unit_test_success, "This is the unit test for successful outcomes of list functions.")
     ADD_TEST(list_test_section1);
+    ADD_TEST(createList_acceptable_sizes);
 END_GROUP
 

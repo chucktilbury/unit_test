@@ -26,7 +26,7 @@ void ptrListDestroy(PtrList* lst) {
 
 void ptrListAdd(PtrList* lst, void* data) {
 
-    if(lst->len + 1 < lst->cap) {
+    if(lst->len >= lst->cap) {
         lst->cap <<= 1;
         lst->list = _realloc_ds_array(lst->list, void*, lst->cap);
     }

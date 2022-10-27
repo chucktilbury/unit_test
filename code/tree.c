@@ -6,12 +6,15 @@
 
 #include "memory.h"
 
+#define MIN(a, b) ((a<b)?(a):(b))
+
 typedef struct _tree_struct_ {
     const char* key;
     void* data;
     size_t size;
     struct _tree_struct_* left;
     struct _tree_struct_* right;
+    struct _tree_struct_* back;
 } TreeNode;
 
 #include "tree.h"
@@ -33,17 +36,19 @@ static TreeErr add_tree_node(TreeNode* tree, TreeNode* node) {
     int x = strcmp(tree->key, node->key);
     if(x > 0) {
         if(tree->right != NULL)
-            return tree_add_node(tree->right, node);
+            return add_tree_node(tree->right, node);
         else {
             tree->right = node;
+            node->back = tree;
             return TREE_OK;
         }
     }
     else if(x < 0) {
         if(tree->left != NULL)
-            return tree_add_node(tree->left, node);
+            return add_tree_node(tree->left, node);
         else {
             tree->left = node;
+            node->back = tree;
             return TREE_OK;
         }
     }
@@ -125,10 +130,47 @@ TreeErr findTreeNode(Tree* tree, const char* key, void* data, size_t* size) {
 }
 
 TreeErr removeTreeNode(Tree* tree, const char* key) {
+
+    TreeNode* node;
+    TreeNode* left;
+    TreeNode* right;
+
+    if(!strcmp(tree->root->key, key)) {
+        node = tree->root;
+        left = node->left;
+        right = node->right;
+
+        tree->root = left;
+        tree->root->back = NULL;
+
+        _free(node->key);
+        _free(node->data);
+        _free(node);
+
+        return add_tree_node(tree->root, right);
+    }
+    else {
+        node = find_tree_node(tree->root, key);
+        left = node->left;
+        right = node->right;
+
+        if(node->back->left == node)
+            node->back->left = NULL;
+        else if(node->back->right == node)
+            node->back->right = NULL;
+
+        if(left != NULL)
+            add_tree_node(tree->root, left);
+
+        if(right != NULL)
+            add_tree_node(tree->root, right);
+
+        _free(node->key);
+        _free(node->data);
+        _free(node);
+        return TREE_OK;
+    }
+
+    return TREE_NOT_FOUND;
 }
 
-TreeErr rotateTreeLeft(Tree* tree, const char* key) {
-}
-
-TreeErr rotateTreeRight(Tree* tree, const char* key) {
-}

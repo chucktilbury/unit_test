@@ -23,11 +23,11 @@ static bool _evaluate(TestEntry* tst, int line, bool expr, const char* fmt, ...)
     va_end(args);
 
     if(expr) {
-        _unit_test_add_msg(7, "ASSERT PASS", line, msg);
+        _unit_test_add_msg(7, "  ASSERT PASS", line, msg);
         tst->pass++;
     }
     else {
-        _unit_test_add_msg(6, "ASSERT FAIL", line, msg);
+        _unit_test_add_msg(6, "  ASSERT FAIL", line, msg);
         tst->fail++;
     }
 

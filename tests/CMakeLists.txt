@@ -1,9 +1,10 @@
 
 project(tests)
 
-# add_custom_command( TARGET tests
-#     COMMAND clang -c tree.c
-# )
+set(CMAKE_C_COMPILER /usr/bin/clang)
+set(CMAKE_CXX_COMPILER /usr/bin/clang++)
+set(EXECUTABLE_OUTPUT_PATH "${PROJECT_SOURCE_DIR}/../bin")
+file(MAKE_DIRECTORY "${PROJECT_SOURCE_DIR}/../bin")
 
 add_executable( ${PROJECT_NAME}
     test_main.c
@@ -15,14 +16,14 @@ target_include_directories(${PROJECT_NAME}
         ${PROJECT_SOURCE_DIR}/../code
 )
 
-link_directories (
+target_link_directories (${PROJECT_NAME}
     PUBLIC
         ${PROJECT_SOURCE_DIR}/bin
 )
 
-set(CMAKE_C_COMPILER /usr/bin/clang)
-set(CMAKE_CXX_COMPILER /usr/bin/clang++)
-set(EXECUTABLE_OUTPUT_PATH "${PROJECT_SOURCE_DIR}/../bin")
+target_link_libraries(${PROJECT_NAME}
+    unit_test
+)
 
 target_compile_options(${PROJECT_NAME} PRIVATE
     -Wall
@@ -35,6 +36,3 @@ target_compile_options(${PROJECT_NAME} PRIVATE
     $<$<CONFIG:PROFILE>:-pg -O0>
 )
 
-target_link_libraries(${PROJECT_NAME}
-    unit_test
-)

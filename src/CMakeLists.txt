@@ -3,6 +3,7 @@ project(unit_test)
 set(CMAKE_C_COMPILER /usr/bin/clang)
 set(CMAKE_CXX_COMPILER /usr/bin/clang++)
 set(LIBRARY_OUTPUT_PATH "${PROJECT_SOURCE_DIR}/../bin")
+file(MAKE_DIRECTORY "${PROJECT_SOURCE_DIR}/../bin")
 
 add_library( ${PROJECT_NAME} STATIC
     asserts.c

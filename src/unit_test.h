@@ -137,21 +137,9 @@ typedef struct {
     int defined; // total groups that were defined.
 } RootEntry;
 
-// typedef PtrList RootList;
-// #define rootListCreate()    (RootList*)ptrListCreate(sizeof(RootEntry))
-// #define rootListDestroy(l)  ptrListDestroy((PtrList*)(l))
-// #define rootListAdd(p, d)   ptrListAdd((PtrList*)(p), (RootEntry*)(d))
-// #define rootListGet(p, i)   (RootEntry*)ptrListAdd((PtrList*)(p), (i))
-// #define rootListGetRaw(p)   (RootEntry**)ptrListGetRaw((PtrList*)(p))
-// #define rootListGetLen(p)   ptrListGetLen((PtrList*)(p))
-
-
 #define UNIT_TEST_ERROR(fmt, ...) _unit_test_add_msg(1, "ERROR", __LINE__, (fmt), ##__VA_ARGS__)
 #define UNIT_TEST_MSG(fmt, ...) _unit_test_add_msg(2, "MSG", __LINE__, (fmt), ##__VA_ARGS__)
-#define UNIT_TEST_TRACE(v, fmt, ...) _unit_test_add_msg(v, "TRACE", __LINE__, (fmt), ##__VA_ARGS__)
-
-#define UNIT_TEST_ASSERT_PASS(fmt, ...) _unit_test_add_msg(7, "ASSERT PASS", __LINE__, (fmt), ##__VA_ARGS__)
-#define UNIT_TEST_ASSERT_FAIL(fmt, ...) _unit_test_add_msg(6, "ASSERT FAIL", __LINE__, (fmt), ##__VA_ARGS__)
+#define UNIT_TEST_TRACE(fmt, ...) _unit_test_trace((fmt), ##__VA_ARGS__)
 
 #define UNIT_TEST_TEST_PASS(fmt, ...) _unit_test_add_msg(5, "TEST PASS", __LINE__, (fmt), ##__VA_ARGS__)
 #define UNIT_TEST_TEST_FAIL(fmt, ...) _unit_test_add_msg(5, "TEST FAIL", __LINE__, (fmt), ##__VA_ARGS__)
@@ -175,35 +163,43 @@ typedef struct {
 /*
  * This defines code that implements the test.
  */
-#define DEF_TEST(n, d)                                \
-    TEST_SCOPE int n##_define_test(void* ptr) {       \
-        TestEntry* tst = (TestEntry*)ptr;             \
-        tst->desc = _copy_str(d);                     \
-        if(!tst->enabled) {                           \
-            UNIT_TEST_MSG("test %s is disabled", #n); \
-            return -1;                                \
-        }                                             \
-        else                                          \
-            tst->entered++;                           \
+#define DEF_TEST(n, d)                                                  \
+    TEST_SCOPE int n##_define_test(void* ptr) {                         \
+        TestEntry* tst = (TestEntry*)ptr;                               \
+        tst->desc = _copy_str(d);                                       \
+        if(!tst->enabled) {                                             \
+            UNIT_TEST_MSG("test %s is disabled", #n);                   \
+            return -1;                                                  \
+        }                                                               \
+        else                                                            \
+            tst->entered++;                                             \
+        _unit_test_add_msg(6, "TEST START", __LINE__, "%s", tst->name); \
         {
 // Add testing code and asserts between DEF and END
-#define END_TEST       \
-    }                  \
-    return tst->error; \
+#define END_TEST                                                       \
+    }                                                                  \
+    _unit_test_add_msg(6, "TEST FINISH", __LINE__, "%s\n", tst->name); \
+    return tst->error;                                                 \
     }
-#define ADD_TEST(n) _unit_test_add_test(group, #n, n##_define_test)
+#define ADD_TEST(n)                                                     \
+    do {                                                                \
+        _unit_test_add_msg(6, "  ADD TEST ENTRY ", __LINE__, "%s", #n); \
+        _unit_test_add_test(group, #n, n##_define_test);                \
+    } while(0)
 
 /*
  * This code is called from main() to define the test group.
  */
-#define DEF_GROUP(n, d)                                            \
-    GroupEntry* n##_define_group() {                               \
-        GroupEntry* group = _unit_test_add_group(#n, d, __FILE__); \
+#define DEF_GROUP(n, d)                                                \
+    GroupEntry* n##_define_group() {                                   \
+        _unit_test_add_msg(6, "ADD GROUP START ", __LINE__, "%s", #n); \
+        GroupEntry* group = _unit_test_add_group(#n, d, __FILE__);     \
         {
 // ADD_TEST(name) between DEF and END
-#define END_GROUP \
-    }             \
-    return group; \
+#define END_GROUP                                                              \
+    _unit_test_add_msg(6, "ADD GROUP FINISH ", __LINE__, "%s\n", group->name); \
+    }                                                                          \
+    return group;                                                              \
     }
 #define ADD_GROUP(n) groupListAdd(root->groups, n##_define_group())
 
@@ -211,27 +207,17 @@ typedef struct {
  * This defines the main function for all tests. The test groups are added
  * here.
  */
-#define DEF_TEST_MAIN(n, d)                     \
-    int main(int argc, char** argv) {           \
-        msgs = msgListCreate();                 \
-        RootEntry* root = _alloc_ds(RootEntry); \
-        root->name = _copy_str(n);              \
-        root->desc = _copy_str(d);              \
-        root->pass = 0;                         \
-        root->fail = 0;                         \
-        root->error = 0;                        \
-        root->ran = 0;                          \
-        root->skipped = 0;                      \
-        root->defined = 0;                      \
-        root->groups = groupListCreate();       \
-        _unit_test_init(argc, argv);            \
+#define DEF_TEST_MAIN(n, d)                                  \
+    int main(int argc, char** argv) {                        \
+        RootEntry* root = _unit_test_init(argc, argv, n, d); \
         {
 // ADD_GROUP(name) between DEF and END.
-#define END_TEST_MAIN               \
-    }                               \
-    _unit_test_run(root);           \
-    _unit_test_save_msgs();         \
-    return _unit_test_finish(root); \
+#define END_TEST_MAIN        \
+    }                        \
+    _unit_test_run(root);    \
+    _unit_test_finish(root); \
+    _unit_test_save_msgs();  \
+    return root->error;      \
     }
 
 #define ASSERT_INT_ZERO(v) _assert_int_zero(tst, __LINE__, v)
@@ -338,12 +324,14 @@ void _unit_test_add_stub(TestEntry* tst, const char* name);
 void _unit_test_add_test(GroupEntry* group, const char* name, TestFunc func);
 GroupEntry* _unit_test_add_group(const char* name, const char* desc, const char* fname);
 
-void _unit_test_init(int argc, char** argv);
+RootEntry* _unit_test_init(int argc, char** argv, const char* name, const char* desc);
 void _unit_test_run(RootEntry* root);
 int _unit_test_finish(RootEntry* root);
 void _unit_test_save_msgs();
 
 void _unit_test_add_msg(int verbosity, const char* name, int line, const char* fmt, ...);
+const char* _unit_test_make_string(int verbo, const char* fmt, ...);
+void _unit_test_trace(const char*, ...);
 
 #endif
 
